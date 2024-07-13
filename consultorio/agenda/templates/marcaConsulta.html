@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Consultorio - Marcar Consulta
+{% endblock %}
+
+{% block conteudo %}
+    <div class="mycard">
+        <h1>Marcar Consulta</h1>
+        <ul>
+            {% for l in marcaConsulta %}
+            <li>{{ l.medico }} | {{ l.dia }} | {{ l.horario }} </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
