@@ -15,4 +15,8 @@ urlpatterns = [
     path('cadastrar-consulta/', views.cadastrar_consulta, name='cadastrar_consulta'),
     path('editar-consulta/<int:consulta_id>/', views.editar_consulta, name='editar_consulta'),
     path('excluir-horario/<int:horario_id>/', views.excluir_horario, name='excluir_horario'),
+    path('marcar-consulta/<int:horario_id>/', views.marcar_consulta, name='marcar_consulta'),
+    path('desmarcar-consulta/<int:consulta_id>/', views.desmarcar_consulta, name='desmarcar_consulta'),
+    path('minhas-consultas/', views.minhas_consultas, name='minhas_consultas'),
+    path('consultas-marcadas/', views.consultas_marcadas, name='consultas_marcadas'),
 ]

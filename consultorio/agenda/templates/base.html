@@ -10,6 +10,12 @@
         <div class="topnav">
             <a href="{% url 'principal' %}">Principal</a> |
             <a href="{% url 'horarios' %}">Horários Livres</a> |
+            {% if user.is_authenticated and not user.is_staff %}
+                <a href="{% url 'minhas_consultas' %}">Minhas Consultas</a> |
+            {% endif %}
+            {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'consultas_marcadas' %}">Consultas Marcadas</a> |
+            {% endif %}
             <a href="{% url 'medicos' %}">Médicos</a> |
             {% if user.is_authenticated and user.is_staff %}
                 <a href="{% url 'cadastrar_medico' %}">Cadastrar Médico</a> |

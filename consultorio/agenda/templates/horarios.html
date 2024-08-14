@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block titulo %}
-    Consultorio - Horários de Consultas
+    Consultório - Horários de Consultas
 {% endblock %}
 
 {% block conteudo %}
@@ -11,9 +11,13 @@
         {% for horario in horarios %}
             <li>
                 {{ horario.medico }} - {{ horario.dia }} às {{ horario.horario }}
-                {% if user.is_authenticated and user.is_staff %}
-                    <a href="{% url 'editar_consulta' horario.id %}">Editar</a> |
-                    <a href="#" onclick="confirmarExclusao({{ horario.id }}); return false;">Excluir</a>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <a href="{% url 'editar_consulta' horario.id %}" class="btn">Editar</a> |
+                        <a href="#" class="btn btn-danger" onclick="confirmarExclusao({{ horario.id }}); return false;">Excluir</a>
+                    {% else %}
+                        <a href="{% url 'marcar_consulta' horario.id %}" class="btn btn-success" onclick="marcarConsulta({{ horario.id }}); return false;">Marcar Consulta</a>
+                    {% endif %}
                 {% endif %}
             </li>
         {% empty %}
@@ -42,6 +46,10 @@
         document.getElementById('confirmar-exclusao-nao').onclick = function() {
             modal.style.display = 'none';
         };
+    }
+
+    function marcarConsulta(horarioId) {
+        window.location.href = "{% url 'marcar_consulta' 0 %}".replace('0', horarioId);
     }
 </script>
 {% endblock %}

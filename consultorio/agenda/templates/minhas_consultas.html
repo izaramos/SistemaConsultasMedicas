@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Consultório - Minhas Consultas
+{% endblock %}
+
+{% block conteudo %}
+<div class="mycard">
+    <h1>Minhas Consultas</h1>
+    <ul>
+        {% for consulta in consultas %}
+            <li>
+                {{ consulta.medico }} - {{ consulta.dia }} às {{ consulta.horario }}
+                <a href="#" class="btn btn-danger" onclick="confirmarDesmarcar({{ consulta.id }}); return false;">Desmarcar Consulta</a>
+            </li>
+        {% empty %}
+            <li>Você não tem consultas marcadas.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Modal de Confirmação -->
+<div id="confirmar-desmarcar-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; box-shadow:0px 0px 10px rgba(0,0,0,0.5); z-index:1000;">
+    <p>Tem certeza que deseja desmarcar esta consulta?</p>
+    <button id="confirmar-desmarcar-sim">Sim</button>
+    <button id="confirmar-desmarcar-nao">Não</button>
+</div>
+
+<script>
+    function confirmarDesmarcar(consultaId) {
+        var modal = document.getElementById('confirmar-desmarcar-modal');
+        modal.style.display = 'block';
+
+        document.getElementById('confirmar-desmarcar-sim').onclick = function() {
+            var url = "{% url 'desmarcar_consulta' 0 %}".replace('0', consultaId);
+            window.location.href = url;
+        };
+
+        document.getElementById('confirmar-desmarcar-nao').onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Consultas Marcadas
+{% endblock %}
+
+{% block conteudo %}
+<div class="mycard">
+    <h1>Consultas Marcadas</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        <label for="data_inicio">Data Início:</label>
+        <input type="date" id="data_inicio" name="data_inicio" required>
+
+        <label for="data_fim">Data Fim:</label>
+        <input type="date" id="data_fim" name="data_fim" required>
+
+        <button type="submit">Filtrar</button>
+    </form>
+    
+    <ul>
+        {% for consulta in consultas_filtradas %}
+            <li>{{ consulta.dia }} - {{ consulta.horario }} com Dr(a). {{ consulta.medico }} (Paciente: {{ consulta.paciente }})</li>
+        {% empty %}
+            <li>Nenhuma consulta encontrada no período selecionado.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

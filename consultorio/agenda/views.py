@@ -7,13 +7,22 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import MedicoForm, ConsultaForm, EditarConsultaForm
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django import forms
+from django.utils.dateparse import parse_date
 
 def principal(request):
     return render(request, 'principal.html')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
+
+def is_normal_user(user):
+    return not user.is_staff
 
 # DEFS DE LOGIN ----------------------------------------------------------------------------------------------------
 def login_view(request):
@@ -49,10 +58,7 @@ def cadastro_view(request):
             return redirect('login')
     return render(request, 'cadastro.html')
 
-def is_admin(user):
-    return user.is_authenticated and user.is_staff
-
-# DEFS DE HORÁRIOS DE CONSULTA ---------------------------------------------------------------------------------------
+# DEFS DE CONSULTA ---------------------------------------------------------------------------------------
 def carregar_horarios():
     filename = os.path.join(BASE_DIR, 'agenda', 'horarios.json')
     if os.path.exists(filename):
@@ -149,6 +155,97 @@ def excluir_horario(request, horario_id):
     horarios = [h for h in horarios if h['id'] != horario_id]
     salvar_horarios(horarios)
     return redirect('horarios')
+
+class PeriodoForm(forms.Form):
+    data_inicio = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), label="Data de Início")
+    data_fim = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), label="Data de Fim")
+
+@user_passes_test(is_admin)
+def consultas_marcadas(request):
+    consultas_filtradas = []
+    data_inicio = None
+    data_fim = None
+    if request.method == 'POST':
+        data_inicio_str = request.POST.get('data_inicio')
+        data_fim_str = request.POST.get('data_fim')
+        if data_inicio_str:
+            data_inicio = datetime.strptime(data_inicio_str, '%Y-%m-%d').date()
+        if data_fim_str:
+            data_fim = datetime.strptime(data_fim_str, '%Y-%m-%d').date()
+        if data_inicio and data_fim:
+            for usuario in User.objects.all():
+                filename = os.path.join(BASE_DIR, 'agenda', f'{usuario.username}_consultas.json')
+                if os.path.exists(filename):
+                    with open(filename, 'r', encoding='utf-8') as f:
+                        consultas = json.load(f)
+                        for consulta in consultas:
+                            try:
+                                # Converter a string de data da consulta para um objeto date
+                                data_consulta = datetime.strptime(consulta.get('dia', ''), '%d de %B de %Y').date()
+                            except ValueError:
+                                data_consulta = None
+
+                            # Verificar se a data da consulta está dentro do intervalo
+                            if data_consulta and data_inicio <= data_consulta <= data_fim:
+                                consultas_filtradas.append({
+                                    'medico': consulta['medico'],
+                                    'dia': consulta['dia'],
+                                    'horario': consulta['horario'],
+                                    'paciente': usuario.username
+                                })
+
+    context = {
+        'consultas_filtradas': consultas_filtradas
+    }
+    return render(request, 'consultas_marcadas.html', context)
+
+@login_required
+def marcar_consulta(request, horario_id):
+    horarios = carregar_horarios()
+    horario_selecionado = next((h for h in horarios if h['id'] == horario_id), None)
+    if horario_selecionado:
+        horarios.remove(horario_selecionado)
+        salvar_horarios(horarios)
+        adicionar_consulta_usuario(request.user, horario_selecionado)
+        return redirect('minhas_consultas')
+    return redirect('horarios')
+
+def adicionar_consulta_usuario(usuario, horario):
+    filename = os.path.join(BASE_DIR, 'agenda', f'{usuario.username}_consultas.json')
+    consultas = []
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding='utf-8') as f:
+            consultas = json.load(f)
+    consultas.append(horario)
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(consultas, f, indent=4, ensure_ascii=False)
+
+@login_required
+def minhas_consultas(request):
+    filename = os.path.join(BASE_DIR, 'agenda', f'{request.user.username}_consultas.json')
+    consultas = []
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding='utf-8') as f:
+            consultas = json.load(f)
+    return render(request, 'minhas_consultas.html', {'consultas': consultas})
+
+@login_required
+def desmarcar_consulta(request, consulta_id):
+    filename = os.path.join(BASE_DIR, 'agenda', f'{request.user.username}_consultas.json')
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding='utf-8') as f:
+            consultas = json.load(f)
+        consulta_selecionada = next((c for c in consultas if c['id'] == consulta_id), None)
+        if consulta_selecionada:
+            consultas.remove(consulta_selecionada)
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(consultas, f, indent=4, ensure_ascii=False)
+
+            # Re-adiciona a consulta em horarios.json
+            horarios = carregar_horarios()
+            horarios.append(consulta_selecionada)
+            salvar_horarios(horarios)
+    return redirect('minhas_consultas')
 
 # DEFS DE MÉDICOS ---------------------------------------------------------------------------------------------------
 def carregar_medicos():
