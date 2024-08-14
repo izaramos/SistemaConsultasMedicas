@@ -88,9 +88,3 @@ Este repositório é destinado ao trabalho de implementação da disciplina de P
 
 - **Izabelle Ramos Tomé**
 - **Lucas Carvalho**
-
-
-
-- O super user é:
-administrador
-12345678
