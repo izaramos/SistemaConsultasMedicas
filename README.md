@@ -1,7 +1,7 @@
 
 # Progamação Web- Sistema De Consultas Médicas
 
-![Sistema de Agendamento de Consultas Médicas](https://github.com/LukeZaneh/ProgWeb-SistemaConsultasMedicas/blob/main/consultorio/staticfiles/logo-consultorio.png)
+![Sistema de Agendamento de Consultas Médicas](https://github.com/izaramos/SistemaConsultasMedicas/blob/main/consultorio/staticfiles/logo-consultorio.png)
 
 ## Descrição
 
