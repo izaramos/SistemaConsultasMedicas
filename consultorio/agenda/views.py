@@ -322,5 +322,4 @@ def excluir_medico(request, id):
     caminho_arquivo = os.path.join(BASE_DIR, 'agenda', 'medicos.json')
     with open(caminho_arquivo, 'w', encoding='utf-8') as file:
         json.dump(medicos, file, indent=4, ensure_ascii=False)
-        
     return redirect('medicos')
