@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Cadastre-se
+{% endblock %}
+
+{% block conteudo %}
+<div class="mycard">
+<div class="signup-container">
+    <h1>Cadastre-se</h1>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Nome</label>
+            <input type="text" name="username" id="username" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Senha</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+        <button type="submit">Cadastrar-se</button>
+    </form>
+</div>
+</div>
+{% endblock %}

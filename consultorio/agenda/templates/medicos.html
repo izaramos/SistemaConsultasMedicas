@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Médicos
+{% endblock %}
+
+{% block conteudo %}
+<div class="mycard">
+    <h1>Lista de Médicos</h1>
+    <ul>
+        {% for medico in medicos %}
+            <li>
+                {{ medico.nome }} - {{ medico.especialidade }}
+                <a href="{% url 'detalhes_medico' medico.id %}" class="btn">Detalhes</a>
+                {% if user.is_authenticated and user.is_staff %}
+                    <a href="{% url 'editar_medico' medico.id %}" class="btn">Editar</a>
+                    <a href="#" class="btn btn-danger" onclick="confirmarExclusao('{{ medico.id }}')">Excluir</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Nenhum médico disponível.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+    <!-- Modal de Confirmação -->
+    <div id="confirmar-exclusao-modal" style="display:none;">
+        <p>Tem certeza que deseja excluir este médico?</p>
+        <button id="confirmar-exclusao-sim">Sim</button>
+        <button id="confirmar-exclusao-nao">Não</button>
+    </div>
+
+    <script>
+        function confirmarExclusao(medicoId) {
+            var modal = document.getElementById('confirmar-exclusao-modal');
+            modal.style.display = 'block';
+
+            document.getElementById('confirmar-exclusao-sim').onclick = function() {
+                var url = "{% url 'excluir_medico' 0 %}".replace('0', medicoId);
+                window.location.href = url;
+            };
+
+            document.getElementById('confirmar-exclusao-nao').onclick = function() {
+                modal.style.display = 'none';
+            };
+        }
+    </script>
+{% endblock %}

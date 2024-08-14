@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Consultorio - Médicos
+{% endblock %}
+
+{% block conteudo %}
+    <div class="mycard">
+        <h1>Informações</h1>
+        <p><em>Nome:</em> {{ medico.nome }} </p>
+        <p><em>Especialidade:</em> {{ medico.especialidade }}</p>
+        <p><em>Planos de saúde:</em> {{ medico.planos }}</p>
+        <p><em>Valor consulta particular (em R$):</em> {{ medico.preco }}</p>
+    </div>
+
+    <p><center>Volte para <a href="/medicos">Médicos</a></center></p>
+{% endblock %}

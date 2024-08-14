@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Consultorio - Horários de Consultas
+{% endblock %}
+
+{% block conteudo %}
+<div class="mycard">
+    <h1>Horários Livres para Consultas</h1>
+    <ul>
+        {% for horario in horarios %}
+            <li>
+                {{ horario.medico }} - {{ horario.dia }} às {{ horario.horario }}
+                {% if user.is_authenticated and user.is_staff %}
+                    <a href="{% url 'editar_consulta' horario.id %}">Editar</a> |
+                    <a href="#" onclick="confirmarExclusao({{ horario.id }}); return false;">Excluir</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Nenhum horário disponível.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Modal de Confirmação -->
+<div id="confirmar-exclusao-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; box-shadow:0px 0px 10px rgba(0,0,0,0.5); z-index:1000;">
+    <p>Tem certeza que deseja excluir este horário?</p>
+    <button id="confirmar-exclusao-sim">Sim</button>
+    <button id="confirmar-exclusao-nao">Não</button>
+</div>
+
+<script>
+    function confirmarExclusao(horarioId) {
+        var modal = document.getElementById('confirmar-exclusao-modal');
+        modal.style.display = 'block';
+
+        document.getElementById('confirmar-exclusao-sim').onclick = function() {
+            var url = "{% url 'excluir_horario' 0 %}".replace('0', horarioId);
+            window.location.href = url;
+        };
+
+        document.getElementById('confirmar-exclusao-nao').onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
+</script>
+{% endblock %}

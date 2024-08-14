@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Cadastrar Consulta
+{% endblock %}
+
+{% block conteudo %}
+<div class="mycard">
+    <h1>Cadastrar Consulta</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            {{ form.medico.label_tag }}<br>
+            {{ form.medico }}
+        </div>
+        <div>
+            {{ form.dia.label_tag }}<br>
+            {{ form.dia }}
+        </div>
+        <div>
+            {{ form.horario.label_tag }}<br>
+            {{ form.horario }}
+        </div>
+        <div>
+            <button type="submit">Cadastrar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

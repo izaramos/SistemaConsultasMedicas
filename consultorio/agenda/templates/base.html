@@ -8,11 +8,19 @@
     </head>
     <body>
         <div class="topnav">
-            <a href="/">Principal</a> |
-            <a href="/marcaConsulta">Marcar Consulta</a> |
-            <a href="/consultas">Consultas</a> |
-            <a href="/auth/login">Login</a> |
-            <a href="/auth/cadastro">Cadastre-se</a>
+            <a href="{% url 'principal' %}">Principal</a> |
+            <a href="{% url 'horarios' %}">Horários Livres</a> |
+            <a href="{% url 'medicos' %}">Médicos</a> |
+            {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'cadastrar_medico' %}">Cadastrar Médico</a> |
+                <a href="{% url 'cadastrar_consulta' %}">Cadastrar Consulta</a> |
+            {% endif %}
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a> |
+                <a href="{% url 'cadastro' %}">Cadastre-se</a>
+            {% endif %}
         </div>
         {% block conteudo %}
         {% endblock %}

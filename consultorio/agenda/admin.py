@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import marcarConsulta
+from .models import MarcarConsulta
 
-admin.site.register(marcarConsulta)
+admin.site.register(MarcarConsulta)
