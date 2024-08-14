@@ -23,26 +23,26 @@
     </ul>
 </div>
 
-    <!-- Modal de Confirmação -->
-    <div id="confirmar-exclusao-modal" style="display:none;">
-        <p>Tem certeza que deseja excluir este médico?</p>
-        <button id="confirmar-exclusao-sim">Sim</button>
-        <button id="confirmar-exclusao-nao">Não</button>
-    </div>
+<!-- Modal de Confirmação -->
+<div id="confirmar-exclusao-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; box-shadow:0px 0px 10px rgba(0,0,0,0.5); z-index:1000;">
+    <p>Tem certeza que deseja excluir este médico?</p>
+    <button id="confirmar-exclusao-sim">Sim</button>
+    <button id="confirmar-exclusao-nao">Não</button>
+</div>
 
-    <script>
-        function confirmarExclusao(medicoId) {
-            var modal = document.getElementById('confirmar-exclusao-modal');
-            modal.style.display = 'block';
+<script>
+    function confirmarExclusao(medicoId) {
+        var modal = document.getElementById('confirmar-exclusao-modal');
+        modal.style.display = 'block';
 
-            document.getElementById('confirmar-exclusao-sim').onclick = function() {
-                var url = "{% url 'excluir_medico' 0 %}".replace('0', medicoId);
-                window.location.href = url;
-            };
+        document.getElementById('confirmar-exclusao-sim').onclick = function() {
+            var url = "{% url 'excluir_medico' 0 %}".replace('0', medicoId);
+            window.location.href = url;
+        };
 
-            document.getElementById('confirmar-exclusao-nao').onclick = function() {
-                modal.style.display = 'none';
-            };
-        }
-    </script>
+        document.getElementById('confirmar-exclusao-nao').onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
+</script>
 {% endblock %}
